@@ -13,12 +13,12 @@ module EventMachine
   def self.run(*args, &block)
     run_without_monitor(*args) do |*a, &b|
       EM::Monitor.new do |monitor|
-        @monitor = monitor
+        @em_monitor = monitor
         block.call(*a, &b) if block_given?
       end
     end
   ensure
-    @monitor = nil
+    @em_monitor = nil
   end
 
   # Set the block to be called periodically with timing data.
@@ -41,8 +41,8 @@ module EventMachine
   #     puts "Used %.2f seconds of CPU in the last %.2f seconds." % (spans.inject(&:+), to - from)
   #   end
   def self.monitor_spans(opts = {}, &block)
-    raise "EventMachine not initialized" unless @monitor
-    @monitor.monitor_spans(opts[:interval] || Monitor::DEFAULT_INTERVAL, &block)
+    raise "EventMachine not initialized" unless @em_monitor
+    @em_monitor.monitor_spans(opts[:interval] || Monitor::DEFAULT_INTERVAL, &block)
   end
 
   # Set the block to be called periodically with histogram data.
