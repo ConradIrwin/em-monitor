@@ -77,9 +77,10 @@ module EventMachine
   #   When false each CPU-span will be put into exactly one bucket
   #
   # @option opts [Boolean] :cumulative (false)
-  #   When true the values of each bucket will increase monotonically and the
-  #   derivative over time can be used to tell how much CPU was used by spans
-  #   in each bucket in the current monitoring interval.
+  #   When true the values of each bucket will increase monotonically over the
+  #   lifetime of the process and the derivative over time can be used to tell
+  #   how much CPU was used by spans in each bucket in the current monitoring
+  #   interval.
   #   When false the values of each bucket are only the amount of time spent
   #   by CPU-spans in that bucket in the current monitoring interval.
   #
@@ -101,7 +102,8 @@ module EventMachine
     buckets    =  (opts[:buckets]  || Monitor::DEFAULT_BUCKETS).sort
     buckets << (1/0.0)
 
-    # ensure the histogram keys are in the right order
+    # create the histogram keys in (sorted) bucket order to ensure
+    # that histogram.values.join(" ") always does the right thing
     hist = buckets.each_with_object({}){ |bucket, h| h[bucket] = 0 }
 
     monitor_spans(opts) do |spans, from, to|
