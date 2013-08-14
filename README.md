@@ -34,7 +34,7 @@ end
 #=> [0.000565469, 0.000564702, 0.000568218, 0.000564348, 0.005066146, 0.050109482, 0.050113617]
 
 EM::monitor_histogram(interval: 1) do |histogram, from, to|
-  puts "In the last #{from - to} real seconds, we used #{histogram.values.inject(&:+)} CPU-seconds"
+  puts "In the last #{to - from} real seconds, we used #{histogram.values.inject(&:+)} CPU-seconds"
   histogram.each do |key, value|
     puts "#{value} CPU-seconds in spans shorter than #{key} seconds"
   end
